@@ -1,1 +1,1 @@
-# Project
+The goal of the project was to develop a GUI application that retrieves and displays real-time weather data using the OpenWeatherMap API. Implemented user input handling, dynamic UI updates, and day/night themes with CustomTkinter. Strengthened skills in API integration, event-driven programming, and interface design.
