@@ -16,7 +16,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 # ---------------------------- CONFIG ---------------------------------
-API_KEY = os.getenv("WEATHER_API_KEY", " YOUR_API_KEY")
+API_KEY = os.getenv("WEATHER_API_KEY", " 85b6ccf0c2bc401ba6904238251710")
 BASE_URL = "https://api.weatherapi.com/v1/forecast.json"
 STORE = pathlib.Path.home() / ".weather.json"
 
@@ -61,8 +61,8 @@ def deg_to_compass(deg: float) -> str:
 class WeatherApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("🌤️ Weather App")
-        self.root.geometry("720x1080")
+        self.root.title("Weather Dashboard")
+        self.root.geometry("900x1100")
         self.chart_photo = None
         self.last_data = None
 
@@ -74,11 +74,11 @@ class WeatherApp:
 
         # Appearance
         ctk.set_appearance_mode(self.theme)
-        ctk.set_default_color_theme("green")
+        ctk.set_default_color_theme("blue")
 
-        # Main Frame
-        self.frame = ctk.CTkFrame(self.root, corner_radius=20)
-        self.frame.pack(fill="both", expand=True, padx=20, pady=20)
+        # Scrollable main frame
+        self.scroll_frame = ctk.CTkScrollableFrame(self.root, fg_color="transparent")
+        self.scroll_frame.pack(fill="both", expand=True, padx=0, pady=0)
 
         self.create_ui()
         self.load_favorites()
@@ -91,409 +91,368 @@ class WeatherApp:
 
     # ---------------------------- UI SETUP ----------------------------
     def create_ui(self):
+        # Header with gradient effect
+        header = ctk.CTkFrame(self.scroll_frame, height=180, corner_radius=0, 
+                             fg_color=("#3b82f6", "#1e40af"))
+        header.pack(fill="x", padx=0, pady=0)
+        header.pack_propagate(False)
+
         # Title
-        self.title = ctk.CTkLabel(
-            self.frame, 
-            text="🌤️ Live Weather Dashboard", 
-            font=("Segoe UI", 26, "bold")
-        )
-        self.title.pack(pady=(16, 8))
+        title = ctk.CTkLabel(header, text="Weather Dashboard", 
+                            font=("Helvetica", 36, "bold"),
+                            text_color="white")
+        title.pack(pady=(30, 5))
 
-        # Search Bar (centered)
-        self.search_frame = ctk.CTkFrame(self.frame, fg_color="transparent")
-        self.search_frame.pack(pady=8)
+        subtitle = ctk.CTkLabel(header, text="Real-time weather information worldwide", 
+                               font=("Helvetica", 14),
+                               text_color=("white", "#e0e7ff"))
+        subtitle.pack()
 
-        self.city_entry = ctk.CTkEntry(
-            self.search_frame, 
-            width=400, 
-            height=40,
-            placeholder_text="Enter city name...",
-            font=("Segoe UI", 14)
-        )
-        self.city_entry.grid(row=0, column=0, padx=8)
+        # Search card
+        search_card = ctk.CTkFrame(self.scroll_frame, corner_radius=20, 
+                                  fg_color=("#ffffff", "#1e293b"))
+        search_card.pack(fill="x", padx=30, pady=(20, 15))
+
+        search_inner = ctk.CTkFrame(search_card, fg_color="transparent")
+        search_inner.pack(fill="x", padx=25, pady=20)
+
+        # Search input
+        search_label = ctk.CTkLabel(search_inner, text="Search Location", 
+                                   font=("Helvetica", 14, "bold"))
+        search_label.pack(anchor="w", pady=(0, 8))
+
+        input_frame = ctk.CTkFrame(search_inner, fg_color="transparent")
+        input_frame.pack(fill="x")
+
+        self.city_entry = ctk.CTkEntry(input_frame, height=45, 
+                                      placeholder_text="Enter city name...",
+                                      font=("Helvetica", 14),
+                                      border_width=2,
+                                      corner_radius=10)
+        self.city_entry.pack(side="left", fill="x", expand=True, padx=(0, 10))
         self.city_entry.bind("<Return>", lambda e: self.get_weather_async())
-        self.city_entry.bind("<KeyRelease>", lambda e: self._on_entry_change())
 
-        self.search_btn = ctk.CTkButton(
-            self.search_frame, 
-            text="🔍 Search", 
-            width=120,
-            height=40,
-            font=("Segoe UI", 13, "bold"),
-            command=self.get_weather_async
-        )
-        self.search_btn.grid(row=0, column=1, padx=8)
+        self.search_btn = ctk.CTkButton(input_frame, text="Search", 
+                                       height=45, width=120,
+                                       font=("Helvetica", 14, "bold"),
+                                       corner_radius=10,
+                                       command=self.get_weather_async)
+        self.search_btn.pack(side="left")
 
-        # Action Buttons Row (Save, Clear, Copy)
-        self.action_frame = ctk.CTkFrame(self.frame, fg_color="transparent")
-        self.action_frame.pack(pady=8)
+        # Quick actions
+        actions_frame = ctk.CTkFrame(search_card, fg_color="transparent")
+        actions_frame.pack(fill="x", padx=25, pady=(0, 20))
 
-        self.save_btn = ctk.CTkButton(
-            self.action_frame, 
-            text="⭐ Save Favorite", 
-            width=140,
-            command=self.save_favorite
-        )
-        self.save_btn.grid(row=0, column=0, padx=6)
+        self.recent_box = ctk.CTkComboBox(actions_frame, height=35,
+                                         font=("Helvetica", 12),
+                                         corner_radius=8,
+                                         command=self.load_city)
+        self.recent_box.pack(side="left", fill="x", expand=True, padx=(0, 8))
+        self.recent_box.set("Favorites")
 
-        self.clear_btn = ctk.CTkButton(
-            self.action_frame, 
-            text="🗑️ Clear Favorites", 
-            width=140,
-            command=self.clear_favorites
-        )
-        self.clear_btn.grid(row=0, column=1, padx=6)
+        btn_style = {"height": 35, "width": 35, "corner_radius": 8, "text": ""}
+        
+        self.save_btn = ctk.CTkButton(actions_frame, **btn_style, 
+                                     command=self.save_favorite)
+        self.save_btn.pack(side="left", padx=2)
+        ctk.CTkLabel(self.save_btn, text="⭐", font=("Helvetica", 18)).place(relx=0.5, rely=0.5, anchor="center")
 
-        self.copy_btn = ctk.CTkButton(
-            self.action_frame, 
-            text="📋 Copy Summary", 
-            width=140,
-            command=self.copy_summary
-        )
-        self.copy_btn.grid(row=0, column=2, padx=6)
+        self.copy_btn = ctk.CTkButton(actions_frame, **btn_style,
+                                     command=self.copy_summary)
+        self.copy_btn.pack(side="left", padx=2)
+        ctk.CTkLabel(self.copy_btn, text="📋", font=("Helvetica", 18)).place(relx=0.5, rely=0.5, anchor="center")
 
-        # Settings Row (Theme & Unit Toggle)
-        self.settings_frame = ctk.CTkFrame(self.frame, fg_color="transparent")
-        self.settings_frame.pack(pady=8)
+        self.clear_btn = ctk.CTkButton(actions_frame, **btn_style,
+                                      command=self.clear_favorites)
+        self.clear_btn.pack(side="left", padx=2)
+        ctk.CTkLabel(self.clear_btn, text="🗑️", font=("Helvetica", 18)).place(relx=0.5, rely=0.5, anchor="center")
 
-        self.theme_btn = ctk.CTkButton(
-            self.settings_frame, 
-            text=f"🎨 Theme: {self.theme.title()}", 
-            width=160,
-            command=self.toggle_theme
-        )
-        self.theme_btn.grid(row=0, column=0, padx=8)
+        # Settings row
+        settings_frame = ctk.CTkFrame(search_card, fg_color="transparent")
+        settings_frame.pack(fill="x", padx=25, pady=(0, 15))
 
-        self.unit_btn = ctk.CTkButton(
-            self.settings_frame, 
-            text=f"🌡️ Switch to °{'F' if self.unit=='C' else 'C'}", 
-            width=160,
-            command=self.toggle_unit
-        )
-        self.unit_btn.grid(row=0, column=1, padx=8)
+        self.unit_btn = ctk.CTkSegmentedButton(settings_frame, 
+                                               values=["°C", "°F"],
+                                               command=self.unit_changed,
+                                               corner_radius=8,
+                                               height=32)
+        self.unit_btn.set("°C" if self.unit == "C" else "°F")
+        self.unit_btn.pack(side="left", padx=(0, 8))
 
-        # Favorites Dropdown
-        self.recent_box = ctk.CTkComboBox(
-            self.frame, 
-            values=[], 
-            width=340,
-            height=35,
-            font=("Segoe UI", 12),
-            command=self.load_city
-        )
-        self.recent_box.pack(pady=10)
-        self.recent_box.set("📍 Select a favorite city...")
+        self.theme_btn = ctk.CTkSegmentedButton(settings_frame,
+                                                values=["☀️ Light", "🌙 Dark"],
+                                                command=self.theme_changed,
+                                                corner_radius=8,
+                                                height=32)
+        self.theme_btn.set("🌙 Dark" if self.theme == "dark" else "☀️ Light")
+        self.theme_btn.pack(side="left")
 
-        # Divider
-        ctk.CTkFrame(self.frame, height=2, fg_color="gray40").pack(fill="x", padx=40, pady=10)
+        # Main weather card (hero)
+        self.weather_hero = ctk.CTkFrame(self.scroll_frame, corner_radius=20,
+                                        fg_color=("#ffffff", "#1e293b"))
+        self.weather_hero.pack(fill="x", padx=30, pady=15)
 
-        # Current Weather Block
-        self.city_label = ctk.CTkLabel(
-            self.frame, 
-            text="", 
-            font=("Segoe UI", 24, "bold")
-        )
-        self.city_label.pack(pady=(8, 4))
+        self.hero_content = ctk.CTkFrame(self.weather_hero, fg_color="transparent")
+        self.hero_content.pack(fill="both", expand=True, padx=30, pady=30)
 
-        self.date_label = ctk.CTkLabel(
-            self.frame, 
-            text="", 
-            font=("Segoe UI", 14)
-        )
-        self.date_label.pack(pady=(0, 8))
+        # City and date
+        self.city_label = ctk.CTkLabel(self.hero_content, text="", 
+                                      font=("Helvetica", 32, "bold"))
+        self.city_label.pack(pady=(0, 5))
 
-        self.icon_label = ctk.CTkLabel(
-            self.frame, 
-            text="🌎", 
-            font=("Segoe UI Emoji", 96)
-        )
-        self.icon_label.pack(pady=(6, 0))
+        self.date_label = ctk.CTkLabel(self.hero_content, text="",
+                                      font=("Helvetica", 14),
+                                      text_color="gray60")
+        self.date_label.pack(pady=(0, 20))
 
-        self.temp_label = ctk.CTkLabel(
-            self.frame, 
-            text="", 
-            font=("Segoe UI", 52, "bold"), 
-            text_color="#00b4d8"
-        )
-        self.temp_label.pack(pady=(4, 0))
+        # Weather icon and temp
+        main_display = ctk.CTkFrame(self.hero_content, fg_color="transparent")
+        main_display.pack()
 
-        self.desc_label = ctk.CTkLabel(
-            self.frame, 
-            text="", 
-            font=("Segoe UI", 18)
-        )
-        self.desc_label.pack(pady=(0, 6))
+        self.icon_label = ctk.CTkLabel(main_display, text="🌍",
+                                      font=("Helvetica", 100))
+        self.icon_label.pack(side="left", padx=20)
 
-        self.details_label = ctk.CTkLabel(
-            self.frame, 
-            text="", 
-            font=("Segoe UI", 14), 
-            justify="center"
-        )
-        self.details_label.pack()
+        temp_frame = ctk.CTkFrame(main_display, fg_color="transparent")
+        temp_frame.pack(side="left", padx=20)
 
-        # Astro info
-        self.astro_label = ctk.CTkLabel(
-            self.frame, 
-            text="", 
-            font=("Segoe UI", 13), 
-            justify="center"
-        )
-        self.astro_label.pack(pady=(6, 6))
+        self.temp_label = ctk.CTkLabel(temp_frame, text="",
+                                       font=("Helvetica", 72, "bold"),
+                                       text_color=("#3b82f6", "#60a5fa"))
+        self.temp_label.pack()
 
-        # Hourly forecast title
-        self.hourly_title = ctk.CTkLabel(
-            self.frame, 
-            text="📊 Next 12 Hours", 
-            font=("Segoe UI", 16, "bold")
-        )
-        self.hourly_title.pack(pady=(14, 4))
+        self.desc_label = ctk.CTkLabel(temp_frame, text="",
+                                       font=("Helvetica", 18))
+        self.desc_label.pack()
 
-        # Hourly grid
-        self.hourly_frame = ctk.CTkFrame(self.frame, corner_radius=15)
-        self.hourly_frame.pack(fill="x", padx=20)
+        # Stats grid
+        stats_grid = ctk.CTkFrame(self.hero_content, fg_color="transparent")
+        stats_grid.pack(fill="x", pady=(25, 0))
 
-        # Chart
-        self.chart_label = ctk.CTkLabel(self.frame, text="")
-        self.chart_label.pack(pady=(10, 4))
+        self.stat_cards = []
+        for i in range(4):
+            card = ctk.CTkFrame(stats_grid, corner_radius=12,
+                               fg_color=("#f1f5f9", "#0f172a"),
+                               height=80)
+            card.grid(row=0, column=i, padx=8, pady=5, sticky="ew")
+            stats_grid.grid_columnconfigure(i, weight=1)
+            
+            icon_label = ctk.CTkLabel(card, text="", font=("Helvetica", 24))
+            icon_label.pack(pady=(10, 0))
+            
+            value_label = ctk.CTkLabel(card, text="", font=("Helvetica", 18, "bold"))
+            value_label.pack()
+            
+            desc_label = ctk.CTkLabel(card, text="", font=("Helvetica", 11),
+                                     text_color="gray60")
+            desc_label.pack(pady=(0, 8))
+            
+            self.stat_cards.append((icon_label, value_label, desc_label))
 
-        # 3-Day forecast title
-        self.forecast_title = ctk.CTkLabel(
-            self.frame, 
-            text="📅 3-Day Forecast", 
-            font=("Segoe UI", 16, "bold")
-        )
-        self.forecast_title.pack(pady=(14, 4))
+        # Hourly forecast card
+        hourly_card = ctk.CTkFrame(self.scroll_frame, corner_radius=20,
+                                  fg_color=("#ffffff", "#1e293b"))
+        hourly_card.pack(fill="x", padx=30, pady=15)
 
-        # 3-Day forecast grid
-        self.forecast_frame = ctk.CTkFrame(self.frame, corner_radius=15)
-        self.forecast_frame.pack(pady=8, padx=20, fill="x")
+        ctk.CTkLabel(hourly_card, text="Hourly Forecast",
+                    font=("Helvetica", 20, "bold")).pack(anchor="w", padx=25, pady=(20, 10))
 
-        # Status line
-        self.status = ctk.CTkLabel(
-            self.frame, 
-            text="", 
-            font=("Segoe UI", 12),
-            text_color="gray60"
-        )
-        self.status.pack(pady=(8, 0))
+        self.hourly_scroll = ctk.CTkScrollableFrame(hourly_card, height=160,
+                                                    orientation="horizontal",
+                                                    fg_color="transparent")
+        self.hourly_scroll.pack(fill="x", padx=20, pady=(0, 20))
 
-        self._on_entry_change()
+        # Chart card
+        chart_card = ctk.CTkFrame(self.scroll_frame, corner_radius=20,
+                                 fg_color=("#ffffff", "#1e293b"))
+        chart_card.pack(fill="x", padx=30, pady=15)
+
+        ctk.CTkLabel(chart_card, text="Temperature Trend",
+                    font=("Helvetica", 20, "bold")).pack(anchor="w", padx=25, pady=(20, 10))
+
+        self.chart_label = ctk.CTkLabel(chart_card, text="")
+        self.chart_label.pack(padx=25, pady=(0, 20))
+
+        # 3-day forecast card
+        forecast_card = ctk.CTkFrame(self.scroll_frame, corner_radius=20,
+                                    fg_color=("#ffffff", "#1e293b"))
+        forecast_card.pack(fill="x", padx=30, pady=(15, 30))
+
+        ctk.CTkLabel(forecast_card, text="3-Day Forecast",
+                    font=("Helvetica", 20, "bold")).pack(anchor="w", padx=25, pady=(20, 10))
+
+        self.forecast_frame = ctk.CTkFrame(forecast_card, fg_color="transparent")
+        self.forecast_frame.pack(fill="x", padx=20, pady=(0, 20))
+
+        # Status bar
+        self.status = ctk.CTkLabel(self.scroll_frame, text="",
+                                  font=("Helvetica", 11),
+                                  text_color="gray60")
+        self.status.pack(pady=(0, 20))
 
     def show_initial_message(self):
         """Display welcome message"""
-        self.city_label.configure(text="Welcome to Weather Dashboard!")
-        self.desc_label.configure(text="Search any city to get live weather")
-        self.details_label.configure(
-            text="💾 Favorites saved locally\n"
-                 "🎨 Theme & units remembered\n"
-                 "📋 Copy weather summary with one click"
-        )
-        self.astro_label.configure(text="")
+        self.city_label.configure(text="Welcome!")
+        self.date_label.configure(text="Search any city to begin")
+        self.desc_label.configure(text="Real-time data")
+        self.temp_label.configure(text="--°")
 
     # ---------------------------- FAVORITES / STORE --------------------
     def load_favorites(self):
-        """Load favorites into dropdown"""
         favs = self.store.get("favorites", [])
         if favs:
             self.recent_box.configure(values=favs)
 
     def save_favorite(self):
-        """Save current city to favorites"""
         city = self.city_entry.get().strip()
         if not city:
-            messagebox.showwarning("Warning", "Please enter a city name first.")
             return
-        
         favs = self.store.setdefault("favorites", [])
         if city not in favs:
             favs.append(city)
             _write_store(self.store)
             self.recent_box.configure(values=favs)
-            self.status.configure(text=f"✓ {city} added to favorites")
-            messagebox.showinfo("Saved", f"✓ {city} added to favorites.")
-        else:
-            messagebox.showinfo("Info", f"{city} is already in favorites.")
+            self.status.configure(text=f"✓ Saved {city}")
 
     def clear_favorites(self):
-        """Clear all favorites with confirmation"""
-        if messagebox.askyesno("Confirm", "Clear all saved favorites?"):
+        if messagebox.askyesno("Confirm", "Clear all favorites?"):
             self.store["favorites"] = []
             _write_store(self.store)
             self.recent_box.configure(values=[])
-            self.recent_box.set("📍 Select a favorite city...")
-            self.status.configure(text="All favorites cleared")
-            messagebox.showinfo("Cleared", "All favorites removed.")
+            self.recent_box.set("Favorites")
+            self.status.configure(text="Favorites cleared")
 
     def load_city(self, city):
-        """Load weather for selected favorite city"""
-        if city and not city.startswith("📍"):
+        if city and city != "Favorites":
             self.city_entry.delete(0, "end")
             self.city_entry.insert(0, city)
             self.get_weather_async()
 
     # ---------------------------- THEME / UNIT -------------------------
-    def toggle_theme(self):
-        """Toggle between light and dark theme"""
-        self.theme = "light" if self.theme == "dark" else "dark"
+    def theme_changed(self, value):
+        self.theme = "dark" if "Dark" in value else "light"
         self.store["theme"] = self.theme
         _write_store(self.store)
         ctk.set_appearance_mode(self.theme)
-        self.theme_btn.configure(text=f"🎨 Theme: {self.theme.title()}")
-        self.status.configure(text=f"Theme changed to {self.theme}")
+        self.status.configure(text=f"Theme: {self.theme}")
 
-    def toggle_unit(self):
-        """Toggle between Celsius and Fahrenheit"""
-        self.unit = "F" if self.unit == "C" else "C"
+    def unit_changed(self, value):
+        self.unit = "C" if value == "°C" else "F"
         self.store["unit"] = self.unit
         _write_store(self.store)
-        self.unit_btn.configure(text=f"🌡️ Switch to °{'C' if self.unit == 'F' else 'F'}")
         if self.last_data:
             self.update_display()
-            self.status.configure(text=f"Unit changed to °{self.unit}")
 
     # ---------------------------- ASYNC FETCH --------------------------
     def get_weather_async(self):
-        """Start weather fetch in background thread"""
         threading.Thread(target=self.get_weather, daemon=True).start()
 
     # ---------------------------- FETCH WEATHER ------------------------
     def get_weather(self):
-        """Fetch weather data from API"""
         city = self.city_entry.get().strip()
         if not city:
-            self.root.after(0, lambda: messagebox.showwarning("Warning", "Please enter a city name."))
             return
-        
-        if API_KEY == "YOUR_API_KEY_HERE":
+
+        if not API_KEY:
             self.root.after(0, lambda: messagebox.showerror(
                 "API Key Missing",
-                "Please set your WeatherAPI key!\n\n"
-                "Get free key at: https://www.weatherapi.com/signup.aspx\n\n"
-                "Set environment variable:\n"
-                "Windows: setx WEATHER_API_KEY \"your_key\"\n"
-                "Mac/Linux: export WEATHER_API_KEY=\"your_key\""
+                "Get a free key at https://www.weatherapi.com/ and set:\n"
+                "Windows (PowerShell):  setx WEATHER_API_KEY \"your_key\"\n"
+                "macOS/Linux (bash/zsh): export WEATHER_API_KEY=\"your_key\""
             ))
             return
 
-        self.root.after(0, lambda: (
-            self.search_btn.configure(state="disabled", text="Loading..."),
-            self.status.configure(text="🔄 Fetching weather data...")
-        ))
-
+        # UI: loading state
+        self.root.after(0, lambda: (self.search_btn.configure(state="disabled", text="Loading..."),
+                                    self.status.configure(text="Fetching weather…")))
         try:
-            params = {
-                "key": API_KEY, 
-                "q": city, 
-                "days": 3, 
-                "aqi": "no", 
-                "alerts": "no"
-            }
+            params = {"key": API_KEY, "q": city, "days": 3, "aqi": "no", "alerts": "no"}
             resp = requests.get(BASE_URL, params=params, timeout=10)
             resp.raise_for_status()
-            
             try:
                 data = resp.json()
             except ValueError:
-                self.root.after(0, lambda: messagebox.showerror(
-                    "Error", "Unexpected response from weather service."
-                ))
+                self.root.after(0, lambda: messagebox.showerror("Error", "Unexpected response from the weather service."))
                 return
-            
+
             if "error" in data:
-                self.root.after(0, lambda: messagebox.showerror(
-                    "Error", data["error"]["message"]
-                ))
+                self.root.after(0, lambda: messagebox.showerror("Error", data["error"]["message"]))
                 return
 
+            # Success
             self.last_data = data
-
-            # Save to cache and update last_city
             self.last_city = city
             self.store["last_city"] = city
-            cache = self.store.setdefault("cache", {})
-            cache[city] = data
+            self.store.setdefault("cache", {})[city] = data
             _write_store(self.store)
 
             self.root.after(0, self.update_display)
-            self.root.after(0, lambda: self.status.configure(text="✓ Weather updated successfully"))
+            self.root.after(0, lambda: self.status.configure(text="Updated ✓"))
 
         except requests.exceptions.Timeout:
-            self.root.after(0, lambda: self._handle_offline(city, "Request timed out"))
+            self.root.after(0, lambda: (messagebox.showerror("Error", "Request timed out. Showing cached data if available."),
+                                        self._handle_offline(city, "timeout")))
         except requests.exceptions.HTTPError as e:
-            code = e.response.status_code if e.response else "Unknown"
-            self.root.after(0, lambda: self._handle_offline(city, f"HTTP error: {code}"))
+            code = e.response.status_code if e.response else "HTTP"
+            self.root.after(0, lambda: (messagebox.showerror("Error", f"HTTP error: {code}. Showing cached data if available."),
+                                        self._handle_offline(city, f"http {code}")))
         except requests.exceptions.ConnectionError:
-            self.root.after(0, lambda: self._handle_offline(city, "No internet connection"))
+            self.root.after(0, lambda: (messagebox.showerror("Error", "No internet connection. Showing cached data if available."),
+                                        self._handle_offline(city, "offline")))
         except Exception as e:
-            self.root.after(0, lambda: self._handle_offline(city, str(e)))
+            self.root.after(0, lambda: (messagebox.showerror("Error", str(e)),
+                                        self._handle_offline(city, "unknown error")))
         finally:
-            self.root.after(0, lambda: self.search_btn.configure(
-                state="normal", text="🔍 Search"
-            ))
+            self.root.after(0, lambda: self.search_btn.configure(state="normal", text="Search"))
 
-    def _handle_offline(self, city, error_msg):
-        """Handle offline scenarios with cached data"""
-        messagebox.showwarning("Connection Error", f"{error_msg}\n\nShowing cached data if available.")
+    def _handle_offline(self, city, _reason):
         data = self.store.get("cache", {}).get(city)
         if data:
             self.last_data = data
             self.update_display()
-            self.status.configure(text="⚠️ Offline — showing cached data")
+            self.status.configure(text="⚠️ Showing cached data")
         else:
-            self.status.configure(text="⚠️ No cached data available")
+            self.status.configure(text="⚠️ No data available")
 
     # ---------------------------- DISPLAY ------------------------------
     def update_display(self):
-        """Update UI with weather data"""
         data = self.last_data
         loc = data["location"]
         cur = data["current"]
         days = data["forecast"]["forecastday"]
 
-        # Header info
         self.city_label.configure(text=f"{loc['name']}, {loc['country']}")
-        self.date_label.configure(text=f"🕓 {loc['localtime']}")
+        self.date_label.configure(text=f"{loc['localtime']}")
         self.icon_label.configure(text=self.get_icon(cur["condition"]["text"]))
 
-        # Temperature and conditions
         temp = cur["temp_c"] if self.unit == "C" else cur["temp_f"]
         feels = cur["feelslike_c"] if self.unit == "C" else cur["feelslike_f"]
         wind = cur["wind_kph"] if self.unit == "C" else cur["wind_mph"]
         wind_unit = "km/h" if self.unit == "C" else "mph"
         wind_dir = deg_to_compass(cur.get("wind_degree", 0))
 
-        self.temp_label.configure(text=f"{int(round(temp))}°{self.unit}")
-        self.desc_label.configure(text=cur["condition"]["text"])
-        self.details_label.configure(
-            text=(
-                f"💧 Humidity: {cur['humidity']}%\n"
-                f"💨 Wind: {wind} {wind_unit} ({wind_dir})\n"
-                f"🌡️ Feels like: {int(round(feels))}°{self.unit}"
-            )
-        )
+        self.temp_label.configure(text=f"{int(round(temp))}°")
+        self.desc_label.configure(text=cur["condition"]["text"].title())
 
-        # Astro data
-        astro = days[0].get("astro", {})
-        sunrise = astro.get("sunrise", "--")
-        sunset = astro.get("sunset", "--")
-        self.astro_label.configure(
-            text=f"🌅 Sunrise: {sunrise}   🌇 Sunset: {sunset}"
-        )
+        # Update stat cards (now includes wind direction)
+        stats = [
+            ("💧", f"{cur['humidity']}%", "Humidity"),
+            ("💨", f"{wind} {wind_unit} ({wind_dir})", "Wind"),
+            ("🌡️", f"{int(round(feels))}°", "Feels Like"),
+            ("👁️", f"{cur.get('vis_km', 10)} km", "Visibility")
+        ]
+        for i, (icon, value, desc) in enumerate(stats):
+            self.stat_cards[i][0].configure(text=icon)
+            self.stat_cards[i][1].configure(text=value)
+            self.stat_cards[i][2].configure(text=desc)
 
-        # Hourly forecast and chart
         self.display_hourly_and_chart(days, loc["localtime"])
-
-        # 3-day forecast
         self.display_forecast(days)
 
     def display_hourly_and_chart(self, days, localtime_str):
-        """Display hourly forecast grid and temperature chart"""
-        # Clear existing
-        for w in self.hourly_frame.winfo_children():
+        for w in self.hourly_scroll.winfo_children():
             w.destroy()
 
-        # Collect hourly data
         hours = []
         for d in days[:2]:
             for hr in d["hour"]:
@@ -507,35 +466,38 @@ class WeatherApp:
         now = datetime.strptime(localtime_str, "%Y-%m-%d %H:%M")
         future = [h for h in hours if h["dt"] >= now][:12] or hours[:12]
 
-        # Display hourly cards
-        for i, h in enumerate(future):
-            frame = ctk.CTkFrame(self.hourly_frame, corner_radius=10)
-            frame.grid(row=i // 6, column=i % 6, padx=8, pady=8, sticky="nsew")
+        for h in future:
+            card = ctk.CTkFrame(self.hourly_scroll, corner_radius=12, width=90,
+                               fg_color=("#f1f5f9", "#0f172a"))
+            card.pack(side="left", padx=5)
+            card.pack_propagate(False)
 
-            hour_txt = h["dt"].strftime("%I%p").lstrip("0")
+            hour = h["dt"].strftime("%I%p").lstrip("0")
             icon = self.get_icon(h["cond"])
             t = h["temp_c"] if self.unit == "C" else h["temp_f"]
 
-            ctk.CTkLabel(frame, text=hour_txt, font=("Segoe UI", 12, "bold")).pack(pady=(8, 0))
-            ctk.CTkLabel(frame, text=icon, font=("Segoe UI Emoji", 28)).pack(pady=2)
-            ctk.CTkLabel(frame, text=f"{int(round(t))}°{self.unit}", font=("Segoe UI", 14, "bold")).pack(pady=(0, 8))
+            ctk.CTkLabel(card, text=hour, font=("Helvetica", 12, "bold")).pack(pady=(12, 4))
+            ctk.CTkLabel(card, text=icon, font=("Helvetica", 32)).pack(pady=4)
+            ctk.CTkLabel(card, text=f"{int(round(t))}°", font=("Helvetica", 16, "bold")).pack(pady=(4, 12))
 
-        # Create temperature chart
+        # Chart
         times = [h["dt"].strftime("%I%p").lstrip("0") for h in future]
         temps = [h["temp_c"] if self.unit == "C" else h["temp_f"] for h in future]
 
-        fig = plt.figure(figsize=(6.4, 2.2), dpi=120)
+        fig = plt.figure(figsize=(8, 3), dpi=100)
         ax = fig.add_subplot(111)
-        ax.plot(range(len(temps)), temps, marker="o", linewidth=2, markersize=6, color="#00b4d8")
+        ax.plot(range(len(temps)), temps, marker="o", linewidth=3, markersize=8)
+        ax.fill_between(range(len(temps)), temps, alpha=0.2)
         ax.set_xticks(range(len(times)))
-        ax.set_xticklabels(times, rotation=0, fontsize=8)
-        ax.set_ylabel(f"Temperature (°{self.unit})", fontsize=9)
-        ax.set_title("Hourly Temperature Trend", fontsize=11, fontweight="bold")
-        ax.grid(True, alpha=0.3, linestyle="--")
+        ax.set_xticklabels(times, fontsize=9)
+        ax.set_ylabel(f"°{self.unit}", fontsize=10)
+        ax.grid(True, alpha=0.2, linestyle="--")
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
         fig.tight_layout()
 
         buf = BytesIO()
-        fig.savefig(buf, format="png", bbox_inches="tight", facecolor="white")
+        fig.savefig(buf, format="png", bbox_inches="tight", facecolor="white", transparent=True)
         plt.close(fig)
         buf.seek(0)
 
@@ -544,68 +506,53 @@ class WeatherApp:
         self.chart_label.configure(image=self.chart_photo)
 
     def display_forecast(self, days):
-        """Display 3-day forecast"""
         for w in self.forecast_frame.winfo_children():
             w.destroy()
 
         for i, d in enumerate(days):
-            frame = ctk.CTkFrame(self.forecast_frame, corner_radius=10)
-            frame.grid(row=0, column=i, padx=10, pady=10, sticky="nsew")
+            card = ctk.CTkFrame(self.forecast_frame, corner_radius=15,
+                               fg_color=("#f1f5f9", "#0f172a"))
+            card.grid(row=0, column=i, padx=8, pady=5, sticky="ew")
             self.forecast_frame.grid_columnconfigure(i, weight=1)
 
             date = datetime.strptime(d["date"], "%Y-%m-%d").strftime("%a, %b %d")
             icon = self.get_icon(d["day"]["condition"]["text"])
-            avg_temp = d["day"]["avgtemp_c"] if self.unit == "C" else d["day"]["avgtemp_f"]
+            avg = d["day"]["avgtemp_c"] if self.unit == "C" else d["day"]["avgtemp_f"]
+            max_t = d["day"]["maxtemp_c"] if self.unit == "C" else d["day"]["maxtemp_f"]
+            min_t = d["day"]["mintemp_c"] if self.unit == "C" else d["day"]["mintemp_f"]
 
-            ctk.CTkLabel(frame, text=date, font=("Segoe UI", 12, "bold")).pack(pady=(10, 0))
-            ctk.CTkLabel(frame, text=icon, font=("Segoe UI Emoji", 40)).pack(pady=4)
-            ctk.CTkLabel(frame, text=f"{int(round(avg_temp))}°{self.unit}", font=("Segoe UI", 16, "bold")).pack()
-            ctk.CTkLabel(frame, text=d["day"]["condition"]["text"], font=("Segoe UI", 11)).pack(pady=(0, 10))
+            ctk.CTkLabel(card, text=date, font=("Helvetica", 13, "bold")).pack(pady=(15, 5))
+            ctk.CTkLabel(card, text=icon, font=("Helvetica", 48)).pack(pady=8)
+            ctk.CTkLabel(card, text=f"{int(round(avg))}°", font=("Helvetica", 24, "bold")).pack()
+            ctk.CTkLabel(card, text=f"H: {int(round(max_t))}°  L: {int(round(min_t))}°",
+                        font=("Helvetica", 11), text_color="gray60").pack()
+            ctk.CTkLabel(card, text=d["day"]["condition"]["text"],
+                        font=("Helvetica", 11)).pack(pady=(5, 15))
 
     # ---------------------------- UTILITIES ----------------------------
     def get_icon(self, condition: str) -> str:
-        """Get weather emoji based on condition"""
         t = condition.lower()
-        if "sun" in t or "clear" in t:
-            return "☀️"
-        if "cloud" in t:
-            return "☁️"
-        if "rain" in t or "drizzle" in t:
-            return "🌧️"
-        if "snow" in t:
-            return "❄️"
-        if "storm" in t or "thunder" in t:
-            return "⛈️"
-        if "fog" in t or "mist" in t:
-            return "🌫️"
+        if "sun" in t or "clear" in t: return "☀️"
+        if "cloud" in t: return "☁️"
+        if "rain" in t or "drizzle" in t: return "🌧️"
+        if "snow" in t: return "❄️"
+        if "storm" in t or "thunder" in t: return "⛈️"
+        if "fog" in t or "mist" in t: return "🌫️"
         return "🌤️"
 
     def copy_summary(self):
-        """Copy weather summary to clipboard"""
         if not self.last_data:
-            messagebox.showinfo("Info", "No weather data to copy yet.")
             return
-        
         loc = self.last_data["location"]
         cur = self.last_data["current"]
-        city = f"{loc['name']}, {loc['country']}"
         temp = cur["temp_c"] if self.unit == "C" else cur["temp_f"]
-        cond = cur["condition"]["text"]
-        
-        summary = f"Weather in {city}: {int(round(temp))}°{self.unit}, {cond}"
-        
+        summary = f"{loc['name']}, {loc['country']}: {int(round(temp))}°{self.unit}, {cur['condition']['text']}"
         try:
             self.root.clipboard_clear()
             self.root.clipboard_append(summary)
-            self.status.configure(text="✓ Weather summary copied to clipboard")
-            messagebox.showinfo("Copied", f"Copied to clipboard:\n\n{summary}")
-        except Exception:
-            messagebox.showinfo("Weather Summary", summary)
-
-    def _on_entry_change(self):
-        """Enable/disable save button based on text entry"""
-        has_text = bool(self.city_entry.get().strip())
-        self.save_btn.configure(state=("normal" if has_text else "disabled"))
+            self.status.configure(text="✓ Copied to clipboard")
+        except:
+            pass
 
 # ---------------------------- RUN APP --------------------------------
 if __name__ == "__main__":
