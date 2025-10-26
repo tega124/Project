@@ -17,7 +17,7 @@ class WeatherApp:
         self.last_data = None
 
         # Appearance
-        ctk.set_appearance_mode("light")      # "light" or "dark"
+        ctk.set_appearance_mode("dark")      # "light" or "dark"
         ctk.set_default_color_theme("green")  # can be "green", "dark-blue", etc.
 
         # Main Frame
@@ -155,3 +155,4 @@ if __name__ == "__main__":
     root = ctk.CTk()
     app = WeatherApp(root)
     root.mainloop()
+
