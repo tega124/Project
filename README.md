@@ -149,7 +149,12 @@ No internet → caught in a try/except block
 ⚡ Error handling and feedback
 
 🎨 Modern CustomTkinter UI
+Favorites & recent searches	Saved to ~/.weathera.json for persistence
+⚡ Async API requests	Prevents UI freezing during slow network calls
 
+🌑 Dark Theme + Modern look	Set via ctk.set_appearance_mode("dark")
+
+🧠 Safe threading	UI updates scheduled through root.after()
 
 🧪 Quick Setup
 
