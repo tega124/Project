@@ -1,0 +1,73 @@
+
+🗓️ Project Progress Report
+
+Week 1 — Brainstorming & Planning
+
+Explored multiple project ideas (quiz app, calculator, currency converter, etc.).
+
+Decided to build a Weather App because it combines UI design, API usage, and real-time data.
+
+Sketched initial layout ideas and researched weather APIs (chose WeatherAPI.com
+).
+
+Outlined core features: search by city, temperature display, weather icons, and forecast view.
+
+Week 2 — Setup & Environment
+
+Installed Python 3.10+, CustomTkinter, and Requests libraries.
+
+Tested API calls using Postman to confirm the correct JSON responses.
+
+Created a base Tkinter window and experimented with customtkinter frames and buttons.
+
+Successfully displayed basic weather data (city name and temperature) in the app.
+
+Week 3 — UI Design & Functionality
+
+Added the search bar, “Search 🔍” button, and temperature label.
+
+Implemented API integration to fetch live weather by city name.
+
+Displayed weather conditions with emojis (☀️, 🌧️, ❄️, etc.).
+
+Introduced a 3-day forecast section with average temperatures.
+
+Improved layout spacing and applied dark theme.
+
+Week 4 — Feature Enhancements
+
+Added °C/°F toggle button with automatic value conversion.
+
+Introduced favorites and recent searches with JSON persistence (~/.weather.json).
+
+Enabled error handling for invalid city names or missing internet connection.
+
+Organized code into functions and refactored the UI for cleaner look.
+
+Week 5 — Async + UX Polish
+
+Added asynchronous networking using threading to avoid UI freezing during fetch.
+
+Introduced dark/light theme toggle and saved preferences across sessions.
+
+Added hourly forecast cards and a mini matplotlib chart for the next 12 hours.
+
+Implemented offline caching, so previous data loads even without internet.
+
+Created copy summary button (📋) to share quick weather info.
+
+Improved icons, button alignment, and responsiveness.
+
+
+
+Week 6 — Final Touches & Testing
+
+Conducted testing for different cities and time zones.
+
+Verified unit persistence, favorites saving, and theme switching on restart.
+
+Wrote full documentation (README.md, requirements.txt, release.md).
+
+Recorded demo GIFs for final presentation.
+
+Project completed and ready for submission 🎉
