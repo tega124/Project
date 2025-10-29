@@ -1,4 +1,5 @@
 📝 TASK MANAGER
+
 A feature-rich command-line task management application built with Python. Organize your tasks with priorities, due dates, and comprehensive tracking features.
 ✨ Features
 
@@ -12,6 +13,7 @@ A feature-rich command-line task management application built with Python. Organ
 🎨 User-Friendly Interface: Clean CLI with emojis and clear formatting
 
 📁 Project Structure
+
 tasks1/
 ├── tasks.py          # Main application file
 ├── tasks.json        # Task data storage (auto-generated)
@@ -48,6 +50,7 @@ On macOS/Linux:
 bashpython3 tasks.py
 
 📖 USER GUIDE
+
 Main Menu Options
 When you run the application, you'll see the following menu:
 1.  ➕ Add New Task
@@ -93,6 +96,7 @@ Creation and completion timestamps
 
 3️⃣ SEARCH TASKS
 
+
 Enter any keyword
 Searches in both title and description
 Returns all matching tasks
@@ -100,6 +104,7 @@ Returns all matching tasks
 Example:
 🔍 Enter search keyword: project
 Found 3 task(s) matching 'project'
+
 4️⃣ MARK TASK COMPLETE
 
 Shows a list of pending tasks
@@ -134,6 +139,7 @@ Number of overdue tasks
 
 Example Output:
 📊 TASK STATISTICS
+
 ==================================================
 Total Tasks: 10
 ✅ Completed: 3 (30.0%)
@@ -156,6 +162,7 @@ Check Statistics: Weekly review helps track productivity
 Search Feature: Quickly find related tasks without scrolling
 
 📊 TASK DATA FORMAT
+
 Tasks are stored in tasks.json with the following structure:
 json{
     "id": 1,
@@ -168,6 +175,7 @@ json{
     "completed_at": null
 }
 🔧 TROUBLESHOOTING
+
 Issue: "tasks.json not found"
 Solution: The file will be created automatically when you add your first task. If you want sample data, use the provided tasks.json file.
 Issue: "Corrupted data file"
@@ -199,6 +207,7 @@ Email reminders
 Color coding in terminal
 
 📝 Example Workflow
+
 bash# Start the application
 python tasks.py
 
@@ -221,6 +230,7 @@ python tasks.py
 # Clean up completed tasks monthly
 # Choose option: 10
 🤝 CONTRIBUTING
+
 Feel free to modify and enhance this task manager for your needs:
 
 Add new features
@@ -230,6 +240,7 @@ Create a GUI version
 Add cloud sync
 
 📄 LISCENCE
+
 This project is open source and available for personal and educational use.
 👨‍💻 Support
 If you encounter issues:
