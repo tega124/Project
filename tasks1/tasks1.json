@@ -1,11 +1,102 @@
-{
-  "tasks": [
+[
     {
-      "id": "uuid",
-      "text": "Task text",
-      "created_at": "ISO8601 UTC",
-      "completed": false,
-      "completed_at": null
+        "id": 1,
+        "title": "Complete Python project",
+        "description": "Finish the weather app with all features and documentation",
+        "priority": "High",
+        "completed": false,
+        "created_at": "2025-01-15 09:30:00",
+        "due_date": "2025-02-01",
+        "completed_at": null
+    },
+    {
+        "id": 2,
+        "title": "Buy groceries",
+        "description": "Milk, eggs, bread, vegetables, and fruits",
+        "priority": "Medium",
+        "completed": true,
+        "created_at": "2025-01-14 14:20:00",
+        "due_date": "2025-01-15",
+        "completed_at": "2025-01-15 11:45:00"
+    },
+    {
+        "id": 3,
+        "title": "Read programming book",
+        "description": "Continue reading 'Clean Code' by Robert Martin - Chapter 5",
+        "priority": "Low",
+        "completed": false,
+        "created_at": "2025-01-13 08:15:00",
+        "due_date": "2025-01-30",
+        "completed_at": null
+    },
+    {
+        "id": 4,
+        "title": "Schedule dentist appointment",
+        "description": "Call Dr. Smith's office for annual checkup",
+        "priority": "High",
+        "completed": false,
+        "created_at": "2025-01-12 16:00:00",
+        "due_date": "2025-01-20",
+        "completed_at": null
+    },
+    {
+        "id": 5,
+        "title": "Update resume",
+        "description": "Add recent projects and skills to resume for job applications",
+        "priority": "Medium",
+        "completed": false,
+        "created_at": "2025-01-11 10:30:00",
+        "due_date": "2025-01-25",
+        "completed_at": null
+    },
+    {
+        "id": 6,
+        "title": "Exercise routine",
+        "description": "30 minutes cardio and strength training",
+        "priority": "Medium",
+        "completed": true,
+        "created_at": "2025-01-10 07:00:00",
+        "due_date": "2025-01-10",
+        "completed_at": "2025-01-10 18:30:00"
+    },
+    {
+        "id": 7,
+        "title": "Pay utility bills",
+        "description": "Electricity, water, and internet bills for January",
+        "priority": "High",
+        "completed": false,
+        "created_at": "2025-01-09 12:00:00",
+        "due_date": "2025-01-18",
+        "completed_at": null
+    },
+    {
+        "id": 8,
+        "title": "Plan weekend trip",
+        "description": "Research destinations and book accommodation for February weekend getaway",
+        "priority": "Low",
+        "completed": false,
+        "created_at": "2025-01-08 20:15:00",
+        "due_date": "2025-02-10",
+        "completed_at": null
+    },
+    {
+        "id": 9,
+        "title": "Fix kitchen sink",
+        "description": "Leaky faucet needs repair or replacement",
+        "priority": "Medium",
+        "completed": false,
+        "created_at": "2025-01-07 15:45:00",
+        "due_date": "2025-01-22",
+        "completed_at": null
+    },
+    {
+        "id": 10,
+        "title": "Organize digital photos",
+        "description": "Sort and backup photos from 2024 to cloud storage",
+        "priority": "Low",
+        "completed": true,
+        "created_at": "2025-01-06 19:00:00",
+        "due_date": "2025-01-15",
+        "completed_at": "2025-01-14 22:30:00"
     }
-  ]
-}
+]
