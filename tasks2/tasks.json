@@ -1,129 +1,17 @@
-[
-  {
-    "id": 1,
-    "title": "Complete CSC299 Project Milestone 2",
-    "notes": "Implement core features:\n- Task management system\n- CLI interface\n- Data persistence\n- Documentation",
-    "created_at": "2025-10-28 09:00:00",
-    "updated_at": "2025-10-28 09:00:00",
-    "completed_at": null,
-    "due": "2025-11-15",
-    "tags": ["school", "csc299", "project", "programming"],
-    "priority": "high",
-    "status": "open",
-    "recurrence": null,
-    "parent_id": null
-  },
-  {
-    "id": 2,
-    "title": "Weekly grocery shopping",
-    "notes": "Check pantry before shopping\nRemember reusable bags",
-    "created_at": "2025-10-25 14:30:00",
-    "updated_at": "2025-10-31 10:15:00",
-    "completed_at": "2025-10-31 10:15:00",
-    "due": "2025-10-31",
-    "tags": ["personal", "errands", "grocery"],
-    "priority": "medium",
-    "status": "done",
-    "recurrence": "weekly",
-    "parent_id": null
-  },
-  {
-    "id": 3,
-    "title": "Weekly grocery shopping",
-    "notes": "Check pantry before shopping\nRemember reusable bags",
-    "created_at": "2025-10-31 10:15:00",
-    "updated_at": "2025-10-31 10:15:00",
-    "completed_at": null,
-    "due": "2025-11-07",
-    "tags": ["personal", "errands", "grocery"],
-    "priority": "medium",
-    "status": "open",
-    "recurrence": "weekly",
-    "parent_id": 2
-  },
-  {
-    "id": 4,
-    "title": "Study for Data Structures midterm",
-    "notes": "Topics to review:\n- Trees and graphs\n- Sorting algorithms\n- Time complexity\n- Practice problems from textbook",
-    "created_at": "2025-10-26 16:00:00",
-    "updated_at": "2025-10-26 16:00:00",
-    "completed_at": null,
-    "due": "2025-11-05",
-    "tags": ["school", "exam", "data-structures", "study"],
-    "priority": "high",
-    "status": "open",
-    "recurrence": null,
-    "parent_id": null
-  },
-  {
-    "id": 5,
-    "title": "Daily exercise routine",
-    "notes": "30 minutes cardio\n20 minutes strength training\nStretch for 10 minutes",
-    "created_at": "2025-10-29 07:00:00",
-    "updated_at": "2025-10-30 18:30:00",
-    "completed_at": "2025-10-30 18:30:00",
-    "due": "2025-10-30",
-    "tags": ["health", "personal", "exercise"],
-    "priority": "medium",
-    "status": "done",
-    "recurrence": "daily",
-    "parent_id": null
-  },
-  {
-    "id": 6,
-    "title": "Daily exercise routine",
-    "notes": "30 minutes cardio\n20 minutes strength training\nStretch for 10 minutes",
-    "created_at": "2025-10-30 18:30:00",
-    "updated_at": "2025-10-30 18:30:00",
-    "completed_at": null,
-    "due": "2025-10-31",
-    "tags": ["health", "personal", "exercise"],
-    "priority": "medium",
-    "status": "open",
-    "recurrence": "daily",
-    "parent_id": 5
-  },
-  {
-    "id": 7,
-    "title": "Submit job application to TechCorp",
-    "notes": "Required documents:\n- Updated resume\n- Cover letter\n- Portfolio link\n- References",
-    "created_at": "2025-10-27 11:00:00",
-    "updated_at": "2025-10-27 11:00:00",
-    "completed_at": null,
-    "due": "2025-11-03",
-    "tags": ["career", "job-search", "urgent"],
-    "priority": "high",
-    "status": "open",
-    "recurrence": null,
-    "parent_id": null
-  },
-  {
-    "id": 8,
-    "title": "Team meeting preparation",
-    "notes": "Prepare presentation slides\nReview Q3 metrics\nUpdate project timeline",
-    "created_at": "2025-10-30 09:00:00",
-    "updated_at": "2025-10-30 14:45:00",
-    "completed_at": "2025-10-30 14:45:00",
-    "due": "2025-10-30",
-    "tags": ["work", "meeting", "presentation"],
-    "priority": "high",
-    "status": "done",
-    "recurrence": null,
-    "parent_id": null
-  },
-  {
-    "id": 9,
-    "title": "Read 'Clean Code' Chapter 7",
-    "notes": "Focus on error handling patterns\nTake notes on key concepts\nTry examples in code",
-    "created_at": "2025-10-24 20:00:00",
-    "updated_at": "2025-10-24 20:00:00",
-    "completed_at": null,
-    "due": "2025-11-10",
-    "tags": ["learning", "programming", "books"],
-    "priority": "low",
-    "status": "open",
-    "recurrence": null,
-    "parent_id": null
-  }
-]
-
+{
+  "schema": 2,
+  "last_id": 1,
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Complete CSC299 Project Milestone 2",
+      "notes": "Implement core features:\n- Task management system\n- CLI interface\n- Data persistence\n- Documentation",
+      "created_at": "2025-10-28T09:00:00Z",
+      "updated_at": "2025-10-28T09:00:00Z",
+      "due": "2025-11-15",
+      "tags": ["school", "csc299", "project", "programming"],
+      "priority": "high",
+      "status": "open"
+    }
+  ]
+}
