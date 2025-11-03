@@ -4,17 +4,17 @@ tasks2 - Enhanced Single-File Task Manager
 Pure Python stdlib. Data in tasks.json next to this script.
 
 Usage:
-  python tasks2.py add "Task name" --due 2025-11-10 --priority high --tag school
-  python tasks2.py list --sort due
-  python tasks2.py show 3
-  python tasks2.py edit 3 --priority medium --tag-add urgent
-  python tasks2.py done 3
-  python tasks2.py delete 3
-  python tasks2.py search "homework"
-  python tasks2.py stats
-  python tasks2.py tags
-  python tasks2.py export --format csv --output tasks.csv
-  python tasks2.py import-v1 ../tasks1/tasks.json
+  python cli.py add "Task name" --due 2025-11-10 --priority high --tag school
+  python cli.py list --sort due
+  python cli.py show 3
+  python cli.py edit 3 --priority medium --tag-add urgent
+  python cli.py done 3
+  python cli.py delete 3
+  python cli.py search "homework"
+  python cli.py stats
+  python cli.py tags
+  python cli.py export --format csv --output tasks.csv
+  python cli.py import-v1 ../tasks1/tasks.json
 """
 from __future__ import annotations
 import argparse, json, os, sys, csv
@@ -628,3 +628,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
