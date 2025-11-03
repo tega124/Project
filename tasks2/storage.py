@@ -140,10 +140,10 @@ class TaskStore:
                 status=TaskStatus.OPEN,
             )
             if not task.created_at:
-                from .util import iso_now
+                from .utils import iso_now
                 task.created_at = iso_now()
             if not task.updated_at:
-                from .util import iso_now
+                from .utils import iso_now
                 task.updated_at = iso_now()
             self.add(task)
             count += 1
