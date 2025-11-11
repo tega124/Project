@@ -13,3 +13,4 @@ It builds on previous tasks (`tasks1–tasks3`) but runs independently.
 1. Make sure your `.env` file contains:
    ```bash
    OPENAI_API_KEY=sk-your-key-here
+“This project requires a valid OpenAI API key and uses the gpt-4o-mini model via the OpenAI Python SDK.”
