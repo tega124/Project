@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 # Load environment variables from .env
 load_dotenv()
 
-MODEL = "gpt-5-mini"
+MODEL = "gpt-4o-mini"
 
 SYSTEM_PROMPT = (
     "You are a terse summarizer. For each task description, return a concise, "
@@ -97,3 +97,4 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
