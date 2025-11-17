@@ -13,4 +13,3 @@ dependencies = [
 
 [project.scripts]
 tasks4 = "tasks4:main"
-``` :contentReference[oaicite:1]{index=1}  
