@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 # Load environment variables from .env
 load_dotenv()
 
-MODEL = "gpt-4o-mini"
+MODEL = "gpt-5.1-mini"
 
 SYSTEM_PROMPT = (
     "You are a terse summarizer. For each task description, return a concise, "
@@ -19,8 +19,7 @@ SAMPLES: List[str] = [
      "write a 150-word summary of my PKMS CLI progress, and include 2 screenshots "
      "demonstrating add/list/search. I also have to push a README with setup steps."),
     ("Plan the final study sprint for data structures: build a daily schedule, "
-     "write 10 practice problems on stacks/queues/recursion, and take two timed "
-     "mock exams. Share results with a friend for accountability."),
+     "write 10 practice problems on stacks/queues/recursion, and take two timed ")
 ]
 
 def summarize_many(paragraphs: Iterable[str]) -> List[str]:
@@ -97,4 +96,5 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
 
