@@ -1,8 +1,0 @@
-Metadata-Version: 2.4
-Name: taskmgr
-Version: 0.1.0
-Summary: Spec-kit generated task manager for CSC299
-Requires-Python: >=3.10
-Description-Content-Type: text/markdown
-Provides-Extra: dev
-Requires-Dist: pytest; extra == "dev"
