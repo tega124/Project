@@ -1,4 +1,6 @@
 PROJECT SUMMARY
+
+
 This project represents the most structured and realistic software-engineering workflow I have completed so far. Instead of simply writing code, I developed the system using a full AI-assisted engineering pipeline powered by Spec-Kit, GitHub Copilot, ChatGPT, automated tests, and generated planning documents. The result is a complete task manager application with specifications, tests, a CLI, and a clean commit history showing every step of the process.
 
 1. Using Spec-Kit to Generate an Engineering Workflow
