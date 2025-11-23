@@ -1,96 +1,96 @@
-Summary of My Development Process
+PROJECT SUMMARY
+This project represents the most structured and realistic software-engineering workflow I have completed so far. Instead of simply writing code, I developed the system using a full AI-assisted engineering pipeline powered by Spec-Kit, GitHub Copilot, ChatGPT, automated tests, and generated planning documents. The result is a complete task manager application with specifications, tests, a CLI, and a clean commit history showing every step of the process.
 
-For this project, I built a full task-manager application by following a structured, AI-assisted development workflow using GitHub Spec-Kit, ChatGPT, and GitHub Copilot. This project required not only writing code, but also generating specifications, tests, documentation, and a complete development history. This summary explains how I used different AI tools, what worked well, what issues I ran into, and how the final version of the software was produced.
+1. Using Spec-Kit to Generate an Engineering Workflow
 
-Using AI Tools and Workflows
-1. Starting With Spec-Kit (the “Constitution → Plan → Specs → Tasks → Implement” pipeline)
+The development began with Spec-Kit, which generated the entire project blueprint. The tool created a Constitution, which defined the high-level purpose of the system, design principles, constraints (JSON storage, no database, predictable behavior), and user interaction philosophy. It then generated the Plan, describing the data model, storage logic, CLI structure, and expected behaviors. Finally, it created Tasks, which broke the system down into small actionable developer steps.
 
-The development process began by creating a brand-new repository for the task manager and initializing it with Spec-Kit. I used uvx specify init . to generate the project structure and select GitHub Copilot as the AI assistant. Spec-Kit then guided me through several structured steps:
+This workflow was extremely helpful because it forced me to think like an engineer working in a real team where planning comes before coding. It also gave me a roadmap showing exactly what to implement and how the parts fit together.
 
-/speckit.constitution – I created a constitution describing goals, design principles, constraints, and philosophies for the task-manager system.
+2. Using AI Coding Assistance
+ChatGPT (Chat-based reasoning and debugging)
 
-/speckit.plan – Spec-Kit generated the technical plan and created Phase 1 artifacts including data-model.md, cli.md, and quickstart.md.
+Throughout the process, ChatGPT was my main tool for understanding errors, interpreting planning documents, and resolving environment issues.
+It helped me solve:
 
-/speckit.specify – This produced the functional specification with clearer requirements.
+Hardlink failures during Spec-Kit installation
 
-/speckit.tasks – This generated checklist-style development tasks and established a dependency-ordered build plan.
+Missing pytest and dev dependencies
 
-/speckit.implement – Finally, Spec-Kit scaffolded the reference implementation (CLI, storage system, and tests).
+Wrong package paths causing “ModuleNotFoundError: taskmgr”
 
-This pipeline worked extremely well because it forced a disciplined, structured approach that mirrored real-world software engineering practices.
+Windows path confusion between OneDrive, Desktop, and Project directories
 
-2. Using ChatGPT for Debugging, Environment Issues, and Guidance
+uv and venv issues
 
-ChatGPT played a major role throughout development, especially when things went wrong. Some examples include:
+Fixing the editable install (pip install -e .) so pytest and the CLI worked correctly
 
-Environment issues caused by OneDrive hardlink errors when installing Spec-Kit. ChatGPT helped me fix this by setting UV_NO_HARDLINKS=1.
+Every time I encountered a blocker, ChatGPT explained the cause and walked me through a fix.
 
-PowerShell not supporting bash commands required by Spec-Kit. ChatGPT explained how to emulate the script manually.
+GitHub Copilot (autocomplete + inline coding assistance)
 
-pytest failing because the package wasn’t on the Python path. ChatGPT guided me to add a minimal pyproject.toml and install the project in editable mode (pip install -e .).
+I used Copilot for:
 
-Fixing import errors like import taskmgr not being recognized.
+Generating helper functions
 
-Ensuring dev dependencies (like pytest) were added properly so the grader wouldn’t deduct points, as happened in Task 3.
+Writing repeated patterns in CLI code
 
-Helping generate additional tests, explanations, and clarifications for anything unclear in the specs.
+Filling in docstrings
 
-Overall, ChatGPT was the “software engineer partner” throughout this whole project.
+Suggesting improvements to loops and storage logic
 
-3. Using GitHub Copilot (Inline + Chat Modes)
+Assisting with parts of the test suite
 
-Copilot helped inside VS Code by:
+Copilot was very helpful for speed, but it also made incorrect suggestions—especially when it tried to “guess” specifications incorrectly. I had to constantly compare its suggestions to the official Spec-Kit Plan. This taught me that Copilot is a strong assistant, not a replacement for understanding the design.
 
-Autocompleting Python functions inside the CLI and storage modules.
+Spec-Kit Agents
 
-Suggesting fixes to path issues, JSON handling, and test implementations.
+Spec-Kit was the most structured AI tool out of all of them. It created:
 
-Filling in missing docstrings and usage examples.
+The Constitution file
 
-Helping rewrite parts of the implementation to match the generated specification.
+Detailed Plan
 
-I used both inline Copilot suggestions and the Copilot Chat sidebar to refine code, especially inside the taskmgr/ modules.
+Full Tasks list
 
-What Worked Well
+Auto-generated reference implementation files
 
-Spec-Kit’s structured workflow removed guesswork and made development feel like following a real engineering blueprint.
+Unit tests for the storage module
 
-ChatGPT’s explanations made environment issues easy to solve.
+A consistent folder layout
 
-Copilot sped up coding inside the editor.
+This gave me a blueprint similar to what a tech lead or architect would normally create.
 
-Pytest integration ensured correctness and caught errors early.
+3. What Worked Well
 
-The final software ended up clean, modular, and fully tested.
+Automated tests:
+Running pytest immediately exposed bugs in my storage logic before I continued development. The atomic write tests especially helped me fix JSON save behavior.
 
-What Didn’t Work / False Starts
+Editable install (pip install -e .):
+Once I set this up correctly, everything “clicked.” The CLI worked properly, and the module became importable during tests.
 
-Windows PowerShell caused many issues (no bash, path errors, “the term is not recognized”).
+Spec-Kit templates:
+These forced me into a professional workflow instead of coding randomly. The structure made the project easier to reason about.
 
-OneDrive’s syncing prevented hardlink creation and broke installations.
+Combining AI tools:
+ChatGPT solved conceptual and environment problems. Copilot handled repetitive coding. Spec-Kit produced specifications and structure. Together, they massively accelerated development.
 
-Missing dev dependencies in earlier tasks taught me to always include them.
+4. What Did Not Work / False Starts
 
-Errors where Spec-Kit scripts expected a UNIX-like shell forced manual fixes.
+I initially installed Spec-Kit incorrectly due to Windows hardlink errors.
 
-Initially I tried to run the implementation before installing the project in editable mode, which broke imports.
+I kept running pytest from the wrong folder because OneDrive created multiple paths.
 
-Despite these issues, every problem was eventually resolved through AI guidance.
+I forgot to add pytest to dev dependencies in an earlier task, which caused missing command errors.
 
-Final Result
+Copilot sometimes hallucinated functions not in the specification.
 
-The final software includes:
+Running scripts outside the virtual environment produced confusing import errors.
 
-A working Python CLI task manager
+I mistakenly tried running python -m taskmgr before installing the package in editable mode.
 
-A full specification and plan
+Each mistake forced me to slow down, understand my environment, and reread the Spec-Kit plan.
 
-Automated tests
+5. Final Reflection
 
-Documentation and prototypes
-
-A clean commit history
-
-And a 6–8 minute demonstration video linked in video.txt
-
-This project helped me understand structured AI-assisted software development in a real engineering workflow.
+This project taught me how real engineering workflows operate: specification → planning → tasks → implementation → tests → documentation. More importantly, it showed me how to use AI responsibly—leveraging its strengths while verifying its output. The final product is a fully working task manager backed by a professional-style development pipeline.
