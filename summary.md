@@ -10,6 +10,7 @@ The development began with Spec-Kit, which generated the entire project blueprin
 This workflow was extremely helpful because it forced me to think like an engineer working in a real team where planning comes before coding. It also gave me a roadmap showing exactly what to implement and how the parts fit together.
 
 2. Using AI Coding Assistance
+   
 ChatGPT (Chat-based reasoning and debugging)
 
 Throughout the process, ChatGPT was my main tool for understanding errors, interpreting planning documents, and resolving environment issues.
@@ -64,6 +65,7 @@ A consistent folder layout
 This gave me a blueprint similar to what a tech lead or architect would normally create.
 
 3. What Worked Well
+   
 
 Automated tests:
 Running pytest immediately exposed bugs in my storage logic before I continued development. The atomic write tests especially helped me fix JSON save behavior.
@@ -78,6 +80,7 @@ Combining AI tools:
 ChatGPT solved conceptual and environment problems. Copilot handled repetitive coding. Spec-Kit produced specifications and structure. Together, they massively accelerated development.
 
 4. What Did Not Work / False Starts
+   
 
 I initially installed Spec-Kit incorrectly due to Windows hardlink errors.
 
@@ -94,5 +97,6 @@ I mistakenly tried running python -m taskmgr before installing the package in ed
 Each mistake forced me to slow down, understand my environment, and reread the Spec-Kit plan.
 
 5. Final Reflection
+   
 
 This project taught me how real engineering workflows operate: specification → planning → tasks → implementation → tests → documentation. More importantly, it showed me how to use AI responsibly—leveraging its strengths while verifying its output. The final product is a fully working task manager backed by a professional-style development pipeline.
